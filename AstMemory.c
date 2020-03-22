@@ -1,5 +1,6 @@
 #include <math.h>
 #include <stdlib.h>
+#include <stdio.h>
 
 #include "AstMemory.h"
 #include "Table.h"
@@ -66,10 +67,11 @@ void vartable_push_top() {
         vartable_tops = realloc(vartable_tops, vartable_tops_capacity);
     }
     vartable_tops[vartable_tops_size] = vartable->size;
+    vartable_tops_size++;
 }
 
 void vartable_pop_top() {
-    int last_top = vartable_tops[vartable_tops_size];
     vartable_tops_size--;
+    int last_top = vartable_tops[vartable_tops_size];
     vartable->size = last_top;
 }

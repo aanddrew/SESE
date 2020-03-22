@@ -112,6 +112,7 @@ float Ast_eval(Ast self, float* args, int num_args) {
             for(int i = 0; i < self->num_children; i++) {
                 float ret = Ast_eval(self->children[i], args, num_args);
                 if (self->children[i]->kind == RETURN) {
+                    vartable_pop_top();
                     return ret;
                 }
             }
