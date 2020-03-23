@@ -51,12 +51,26 @@ static float evaluate_operator(const char* operator, void* args) {
 
 Ast Ast_init() {
     Ast tree = malloc(sizeof(AstNode));
-    tree->kind = LITERAL;
-    tree->literal = 0.0f;
+    tree->kind = BODY;
+    tree->token = NULL;
     tree->num_args = 0;
     tree->children = NULL;
+    tree->cap_children = 0;
     tree->num_children = 0;
     return tree;
+}
+
+void Ast_add_child(Ast self, Ast child) {
+    if(self->cap_children == 0) {
+        self->cap_children = 2;
+        self->children = malloc(sizeof(Ast*) * self->cap_children);
+    }
+    else if (self->num_children == self->cap_children) {
+        self->cap_children *=2;
+        self->children = realloc(self->children, sizeof(Ast*) *self->cap_children);
+    }
+    self->children[self->num_children] = child;
+    self->num_children++;
 }
 
 //now the actual stuff begins
@@ -85,13 +99,18 @@ float Ast_eval(Ast self, float* args, int num_args) {
             return result;
         } break;
         case FUNCTION: {
+            if (self->num_children != self->num_args) {
+                fprintf(stderr, "ERROR: NOT ENOUGH ARGUMENTS FOR FUNCTIOn \'%s\'\n", self->token);
+                return NAN;
+            }
             //create sub args
             float* sub_args = malloc(sizeof(float) * self->num_args);
             for(int i = 0; i < self->num_children; i++) {
                 sub_args[i] = Ast_eval(self->children[i], args, num_args);
             }
-            return funtable_call(self->token, sub_args, self->num_args);
-            free(args);
+            float val = funtable_call(self->token, sub_args, self->num_args);
+            if (sub_args) free(sub_args);
+            return val;
         } break;
 
         case VARIABLE: {
@@ -121,4 +140,43 @@ float Ast_eval(Ast self, float* args, int num_args) {
         } break;
     }
     return NAN;
+}
+
+static const char * kind_to_string(int kind) {
+    switch(kind) {
+        case LITERAL: return "LITERAL"; break;
+        case ARGUMENT: return "ARGUMENT"; break;
+        case OPERATOR: return "OPERATOR"; break;
+        case FUNCTION: return "FUNCTION"; break;
+        
+        //these symbolize stuff
+        case VARIABLE: return "VARIABLE"; break;
+
+        //these do stuff
+        case BODY: return "BODY"; break;
+        case RETURN: return "RETURN"; break;
+        case ASSIGNMENT: return "ASSIGNMENT"; break;
+    }
+    return "";
+}
+
+static void Ast_print_helper(Ast self, int level) {
+    for(int i = 0; i < level; i++) {
+        printf("    ");
+    }
+    printf("%s", kind_to_string(self->kind));
+    switch(self->kind) {
+        case LITERAL: printf(", lit: %f", self->literal); break;
+        case ARGUMENT: printf(", arg: %d", self->arg_idx); break;
+        case BODY: break;
+        default: printf(", tok: \'%s\'", self->token ? self->token : ""); break;
+    }
+    printf("\n");
+    for(int i = 0; i < self->num_children; i++) {
+        Ast_print_helper(self->children[i], level + 1);
+    }
+}
+
+void Ast_print(Ast self) {
+    Ast_print_helper(self, 0);
 }

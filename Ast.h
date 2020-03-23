@@ -15,6 +15,7 @@ struct AstNodeStruct {
     int num_args;
 
     AstNode** children;
+    int cap_children;
     int num_children;
 };
 
@@ -43,5 +44,7 @@ extern const char* delimeters[];
 
 Ast Ast_init();
 float Ast_eval(Ast self, float* args, int num_args);
+
+void Ast_print(Ast);
 
 #endif

@@ -14,4 +14,6 @@ void vartable_pop_top();
 int funtable_insert(const char* name, Ast tree);
 float funtable_call(const char* name, float* args, int num_args);
 
+void funtable_print(const char* name);
+
 #endif

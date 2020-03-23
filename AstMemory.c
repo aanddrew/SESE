@@ -36,6 +36,18 @@ float funtable_call(const char* name, float* args, int num_args) {
     }
 }
 
+void funtable_print(const char* name) {
+    Ast tree = (Ast) Table_get(funtable, name);
+    if (!tree) {
+        printf("Function %s does not exist\n", name);
+    }
+    else {
+        printf("\n");
+        printf("Tree for function %s:\n", name);
+        Ast_print(tree);
+    }
+}
+
 int vartable_insert(const char* name, float val) {
     float* valptr = malloc(sizeof(float));
     *valptr = val;
@@ -62,9 +74,9 @@ void vartable_push_top() {
         vartable_tops_capacity = 4;
         vartable_tops = malloc(sizeof(int) * 4);
     }
-    if (vartable_tops_size == vartable_tops_capacity) {
+    else if (vartable_tops_size == vartable_tops_capacity) {
         vartable_tops_capacity *= 2;
-        vartable_tops = realloc(vartable_tops, vartable_tops_capacity);
+        vartable_tops = realloc(vartable_tops, sizeof(int) * vartable_tops_capacity);
     }
     vartable_tops[vartable_tops_size] = vartable->size;
     vartable_tops_size++;
