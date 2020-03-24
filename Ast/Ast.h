@@ -1,6 +1,8 @@
 #ifndef AST_H
 #define AST_H
 
+#include "../containers/Vector.h"
+
 struct AstNodeStruct;
 typedef struct AstNodeStruct AstNode;
 
@@ -14,9 +16,7 @@ struct AstNodeStruct {
     };
     int num_args;
 
-    AstNode** children;
-    int cap_children;
-    int num_children;
+    Vector* children;
 };
 
 typedef AstNode* Ast;
@@ -41,9 +41,10 @@ extern const char* operators[];
 extern const char* keywords[];
 extern const char* delimeters[];
 
-
 Ast Ast_init();
 float Ast_eval(Ast self, float* args, int num_args);
+void Ast_add_child(Ast self, Ast child);
+Ast Ast_get_child(Ast self, int index);
 
 void Ast_print(Ast);
 

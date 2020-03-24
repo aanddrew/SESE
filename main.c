@@ -1,8 +1,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "Ast.h"
-#include "AstMemory.h"
+#include "Ast/Ast.h"
+#include "Ast/AstMemory.h"
+#include "Lexer/Lexer.h"
+#include "Parser/Parser.h"
+#include "containers/Vector.h"
 
 void test_1() {
     const int NUM_NODES = 20;
@@ -13,16 +16,15 @@ void test_1() {
     }
 
     ast[0]->kind = BODY;
-    ast[0]->num_children = 2;
-    ast[0]->children = (ast + 1);
+    Ast_add_child(ast[0], ast[1]);
+    Ast_add_child(ast[0], ast[2]);
 
     ast[1]->kind = ASSIGNMENT;
-    ast[1]->children = (ast + 3);
-    ast[1]->num_children = 2;
+    Ast_add_child(ast[1], ast[3]);
+    Ast_add_child(ast[1], ast[4]);
 
     ast[2]->kind = RETURN;
-    ast[2]->children = (ast + 7);
-    ast[2]->num_children = 1;
+    Ast_add_child(ast[2], ast[7]);
 
     //var = 4
     ast[3]->kind = VARIABLE;
@@ -41,8 +43,8 @@ void test_1() {
     ast[7]->kind = OPERATOR;
     ast[7]->token = "*";
     ast[7]->num_args = 2;
-    ast[7]->children = (ast + 5);
-    ast[7]->num_children = 2;
+    Ast_add_child(ast[7], ast[5]);
+    Ast_add_child(ast[7], ast[6]);
 
     funtable_insert("test", ast[0]);
 
@@ -68,46 +70,42 @@ void test_2() {
     }
 
     ast[0]->kind = BODY;
-    ast[0]->num_children = 2;
-    ast[0]->children = (ast + 1);
+    Ast_add_child(ast[0], ast[1]);
+    Ast_add_child(ast[0], ast[2]);
 
     ast[1]->kind = ASSIGNMENT;
-    ast[1]->num_children = 2;
-    ast[1]->children = (ast + 3);
+    Ast_add_child(ast[1], ast[3]);
+    Ast_add_child(ast[1], ast[4]);
 
     ast[2]->kind = RETURN;
-    ast[2]->num_children = 1;
-    ast[2]->children = ast + 5;
+    Ast_add_child(ast[2], ast[5]);
 
     ast[3]->kind = VARIABLE;
     ast[3]->token = "tmp";
 
     ast[4]->kind = OPERATOR;
     ast[4]->token = "sin";
-    ast[4]->num_children = 1;
     ast[4]->num_args = 1;
-    ast[4]->children = ast + 6;
+    Ast_add_child(ast[4], ast[6]);
 
     ast[5]->kind = OPERATOR;
     ast[5]->token = "+";
     ast[5]->num_args = 2;
-    ast[5]->children = ast + 7;
-    ast[5]->num_children = 2;
+    Ast_add_child(ast[5], ast[7]);
+    Ast_add_child(ast[5], ast[8]);
 
     ast[6]->kind = ARGUMENT;
     ast[6]->arg_idx = 0;
 
     ast[7]->kind = OPERATOR;
     ast[7]->token = "sin";
-    ast[7]->num_children = 1;
     ast[7]->num_args = 1;
-    ast[7]->children = ast + 9;
+    Ast_add_child(ast[7], ast[9]);
 
     ast[8]->kind = OPERATOR;
     ast[8]->token = "sin";
     ast[8]->num_args = 1;
-    ast[8]->num_children = 1;
-    ast[8]->children = ast + 10;
+    Ast_add_child(ast[8], ast[10]);
 
     ast[9]->kind = VARIABLE;
     ast[9]->token = "tmp";
@@ -115,12 +113,11 @@ void test_2() {
     ast[10]->kind = OPERATOR;
     ast[10]->token = "*";
     ast[10]->num_args = 2;
-    ast[10]->children = ast + 11;
-    ast[10]->num_children = 2;
+    Ast_add_child(ast[10], ast[11]);
+    Ast_add_child(ast[10], ast[12]);
 
     ast[11]->kind = ARGUMENT;
     ast[11]->arg_idx = 1;
-
 
     ast[12]->kind = LITERAL;
     ast[12]->literal = 12.0f;
@@ -154,14 +151,14 @@ void test_3() {
 
     ast[0]->kind = OPERATOR;
     ast[0]->token = "+";
-    ast[0]->children = ast + 1;
-    ast[0]->num_children = 2;
+    Ast_add_child(ast[0], ast[1]);
+    Ast_add_child(ast[0], ast[2]);
     ast[0]->num_args = 2;
 
     ast[1]->kind = FUNCTION;
     ast[1]->token = "hi";
-    ast[1]->children = ast + 3;
-    ast[1]->num_children = 2;
+    Ast_add_child(ast[1], ast[3]);
+    Ast_add_child(ast[1], ast[4]);
     ast[1]->num_args = 2;
 
     ast[2]->kind = FUNCTION;
@@ -191,7 +188,7 @@ void test_3() {
 
 int main() {
     Memory_init();
-
+    /*
     vartable_insert("hello", 42.0f);
     printf("%f\n", vartable_get("var"));
 
@@ -199,6 +196,24 @@ int main() {
     test_2();
     funtable_print("hi");
     test_3();
+
+    */
+
+    printf("-----Testing LEXER-----\n");
+    /*
+    Vector* tokens = lex_string("func hello(x,y){ return x + y; }");
+    for(int i = 0; i < tokens->num; i++) {
+        printf("\'%s\'\n", (char*) Vector_get(tokens, i));
+    }
+    */
+    Vector* tokens = lex_file("test.nm");
+
+    parse_tokens(tokens);
+
+    for(int i = 0; i < tokens->num; i++) {
+        free(tokens->array[i]);
+    }
+    Vector_delete(tokens);
 
     Memory_cleanup();
 }

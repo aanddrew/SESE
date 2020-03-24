@@ -3,7 +3,7 @@
 #include <stdio.h>
 
 #include "AstMemory.h"
-#include "Table.h"
+#include "../containers/Table.h"
 
 static Table* vartable;
 static Table* funtable;
