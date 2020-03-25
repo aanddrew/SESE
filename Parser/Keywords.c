@@ -1,3 +1,5 @@
+#include <string.h>
+
 #include "Keywords.h"
 
 const char* delim_opens[] = {
@@ -24,4 +26,15 @@ int is_delim_close(const char* str) {
     return -1;
 }
 
+const char* operators[] = {
+    "+", "-", "*", "/", "sin"
+};
 
+int is_operator(const char* str) {
+    for(int i = 0; i < NUM_OPERATORS; i++) {
+        if (!strcmp(str, operators[i])) {
+            return i;
+        }
+    }
+    return -1;
+}

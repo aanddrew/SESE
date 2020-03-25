@@ -71,7 +71,7 @@ Vector* lex_string(const char* str) {
     return tokens;
 }
 
-#define DBG_LEXER
+//#define DBG_LEXER
 Vector* lex_file(const char* filename) {
     FILE* file = fopen(filename, "r");
     Vector* tokens = Vector_init();

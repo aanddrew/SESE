@@ -98,7 +98,7 @@ float Ast_eval(Ast self, float* args, int num_args) {
 
         case ASSIGNMENT: {
             if(!vartable_insert(Ast_get_child(self, 0)->token, Ast_eval(Ast_get_child(self, 1), args, num_args))) {
-                fprintf(stderr, "ERROR, VARIABLE %s ALREADY EXISTS!\n", Ast_get_child(self, 0)->token);
+                fprintf(stderr, "ERROR, VARIABLE \'%s\' ALREADY EXISTS!\n", Ast_get_child(self, 0)->token);
             }
             return NAN;
         } break;

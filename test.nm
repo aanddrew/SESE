@@ -1,7 +1,15 @@
-func jeez_rick(apple, banana) {
-    return 46;
+func hello(x,y) {
+    var = 72 * y;
+    print(var)
+    return 3 + (x / var);
 }
 
-func hello(x,y) {
-    return (x + 32) * jeez_rick(0, 0 );
+hey = hello(2,2);
+print(hey);
+
+func watup(x) {
+    return hello(x,1);
 }
+
+z = watup(hey);
+print(z);

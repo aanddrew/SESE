@@ -1,6 +1,7 @@
 #include <math.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 
 #include "AstMemory.h"
 #include "../containers/Table.h"
@@ -8,9 +9,15 @@
 static Table* vartable;
 static Table* funtable;
 
+static Ast print_tree;
+
 void Memory_init() {
     vartable = Table_init();
     funtable = Table_init();
+
+    print_tree = Ast_init();
+    print_tree->num_args = 1;
+    print_tree->kind = BODY;
 }
 
 void Memory_cleanup() {
@@ -27,6 +34,10 @@ int funtable_insert(const char* name, Ast tree) {
 }
 
 float funtable_call(const char* name, float* args, int num_args) {
+    if (!strcmp(name, "print")) {
+        printf("%f\n", args[0]);
+        return NAN;
+    }
     Ast tree = (Ast) Table_get(funtable, name);
     if (tree == NULL) {
         return NAN;
@@ -34,6 +45,13 @@ float funtable_call(const char* name, float* args, int num_args) {
     else {
         return Ast_eval(tree, args, num_args);
     }
+}
+
+Ast funtable_get(const char* name) {
+    if (!strcmp(name, "print")) {
+        return print_tree;
+    }
+    return Table_get(funtable, name);
 }
 
 void funtable_print(const char* name) {

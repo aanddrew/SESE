@@ -188,32 +188,14 @@ void test_3() {
 
 int main() {
     Memory_init();
-    /*
-    vartable_insert("hello", 42.0f);
-    printf("%f\n", vartable_get("var"));
-
-    test_1();
-    test_2();
-    funtable_print("hi");
-    test_3();
-
-    */
-
-    printf("-----Testing LEXER-----\n");
-    /*
-    Vector* tokens = lex_string("func hello(x,y){ return x + y; }");
-    for(int i = 0; i < tokens->num; i++) {
-        printf("\'%s\'\n", (char*) Vector_get(tokens, i));
-    }
-    */
     Vector* tokens = lex_file("test.nm");
-
-    parse_tokens(tokens);
+    Ast main = parse_tokens(tokens);
+    Ast_eval(main, NULL, 0);
 
     for(int i = 0; i < tokens->num; i++) {
         free(tokens->array[i]);
     }
     Vector_delete(tokens);
-
     Memory_cleanup();
+    return 0;
 }

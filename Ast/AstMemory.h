@@ -12,6 +12,7 @@ void vartable_push_top();
 void vartable_pop_top();
 
 int funtable_insert(const char* name, Ast tree);
+Ast funtable_get(const char* name);
 float funtable_call(const char* name, float* args, int num_args);
 
 void funtable_print(const char* name);

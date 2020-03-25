@@ -35,6 +35,7 @@ enum AstKind {
     BODY,
     RETURN,
     ASSIGNMENT,
+    IF,
 };
 
 extern const char* operators[];

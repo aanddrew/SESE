@@ -33,6 +33,48 @@ void* Vector_get(Vector* vec, int index) {
     return vec->array[index];
 }
 
+void* Vector_pop(Vector* vec) {
+    void* item = Vector_get(vec, vec->num - 1);
+    vec->num--;
+    return item;
+}
+
+void* Vector_get_last(Vector* vec) {
+    return Vector_get(vec, vec->num-1);
+}
+
+void* Vector_get_first(Vector* vec) {
+    return Vector_get(vec, 0);
+}
+
+void Vector_insert(Vector* vec, void* element, int index) {
+    if (vec->num == vec->size) {
+        vec->size *= 2;
+        vec->array = realloc(vec->array, sizeof(void*) * vec->size);
+    }
+
+    for(int i = vec->num; i > index; i--) {
+        vec->array[i] = vec->array[i-1];
+    }
+    vec->array[index] = element;
+    vec->num++;
+}
+
+void Vector_set(Vector* vec, void* element, int index) {
+    if (index >= vec->num || index < 0) {
+        return;
+    }
+    vec->array[index] = element;
+}
+
+void Vector_reverse(Vector* vec) {
+    for (int i = 0; i < vec->num /2; i++) {
+        void* temp = Vector_get(vec, vec->num - 1 -i);
+        Vector_set(vec, Vector_get(vec, i), vec->num -1 -i);
+        Vector_set(vec, temp, i);
+    }
+}
+
 Vector* Vector_combine(Vector* first, Vector* second) {
     int new_num = first->num + second->num;
     int new_size = first->size + second->size;
