@@ -5,35 +5,7 @@
 
 #include "Ast.h"
 #include "AstMemory.h"
-
-typedef struct Operator_struct {
-    const char* name;
-    float (*eval_function)(float*);
-} Operator;
-
-static float add_func(float* args) { return args[0] + args[1]; };
-static float sub_func(float* args) { return args[0] - args[1]; };
-static float mul_func(float* args) { return args[0] * args[1]; };
-static float div_func(float* args) { return args[0] / args[1]; };
-static float sin_func(float* args) { return sin(args[0]); }
-
-static Operator operator_table[] = {
-    {"+", add_func},
-    {"-", sub_func},
-    {"*", mul_func},
-    {"/", div_func},
-    {"sin", sin_func},
-};
-#define num_operators sizeof(operator_table)/sizeof(Operator)
-
-static float evaluate_operator(const char* operator, void* args) {
-    for (int i = 0; i < num_operators; i++) {
-        if (!strcmp(operator, operator_table[i].name)) {
-            return operator_table[i].eval_function(args);
-        }
-    }
-    return NAN;
-}
+#include "../Parser/Keywords.h"
 
 Ast Ast_init() {
     Ast tree = malloc(sizeof(AstNode));
@@ -52,7 +24,6 @@ Ast Ast_get_child(Ast self, int index) {
     return (Ast) Vector_get(self->children, index);
 }
 
-//now the actual stuff begins
 float Ast_eval(Ast self, float* args, int num_args) {
     switch(self->kind) {
         //the returning values kind
@@ -128,10 +99,8 @@ static const char * kind_to_string(int kind) {
         case OPERATOR: return "OPERATOR"; break;
         case FUNCTION: return "FUNCTION"; break;
         
-        //these symbolize stuff
         case VARIABLE: return "VARIABLE"; break;
 
-        //these do stuff
         case BODY: return "BODY"; break;
         case RETURN: return "RETURN"; break;
         case ASSIGNMENT: return "ASSIGNMENT"; break;

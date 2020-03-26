@@ -38,10 +38,6 @@ enum AstKind {
     IF,
 };
 
-extern const char* operators[];
-extern const char* keywords[];
-extern const char* delimeters[];
-
 Ast Ast_init();
 float Ast_eval(Ast self, float* args, int num_args);
 void Ast_add_child(Ast self, Ast child);

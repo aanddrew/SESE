@@ -1,6 +1,6 @@
 func hello(x,y) {
     var = 72 * y;
-    print(var)
+    print(var);
     return 3 + (x / var);
 }
 
@@ -13,3 +13,5 @@ func watup(x) {
 
 z = watup(hey);
 print(z);
+
+print( 1 > 1 );

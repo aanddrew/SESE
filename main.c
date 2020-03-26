@@ -1,11 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "Ast/Ast.h"
-#include "Ast/AstMemory.h"
-#include "Lexer/Lexer.h"
-#include "Parser/Parser.h"
-#include "containers/Vector.h"
+#include "SESE/SESE.h"
 
 void test_1() {
     const int NUM_NODES = 20;
@@ -186,9 +182,15 @@ void test_3() {
     */
 }
 
-int main() {
+int main(int argc, char** argv) {
+    const char* file;
+    if (argc != 2) {
+        fprintf(stderr, "Usage: sese $filename\n");
+        return 1;
+    }
+    file = argv[1];
     Memory_init();
-    Vector* tokens = lex_file("test.nm");
+    Vector* tokens = lex_file(file);
     Ast main = parse_tokens(tokens);
     Ast_eval(main, NULL, 0);
 

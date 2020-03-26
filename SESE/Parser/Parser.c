@@ -62,14 +62,6 @@ int in_vector(const char* str, Vector* vec) {
     return -1;
 }
 
-int operator_num_args(const char* str) {
-         if (!strcmp(str, "+")) return 2;
-    else if (!strcmp(str, "-")) return 2;
-    else if (!strcmp(str, "*")) return 2;
-    else if (!strcmp(str, "/")) return 2;
-    else if (!strcmp(str, "sin")) return 1;
-    else return -1;
-}
 Ast tree_from_postfix(Vector* tokens, Vector* args) {
     Vector* tree_stack = Vector_init();
     for(int i = 0; i < tokens->num; i++) {
